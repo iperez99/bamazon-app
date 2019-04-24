@@ -7,7 +7,7 @@ CREATE TABLE products
     AUTO_INCREMENT NOT NULL,
     product_name VARCHAR
     (255) NOT NULL,
-    department_name VARCH
+    department_name VARCHAR
     (255) NOT NULL,
     price INTEGER
     (11) NOT NULL,
