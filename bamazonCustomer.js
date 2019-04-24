@@ -19,7 +19,8 @@ var connection = mysql.createConnection({
     database: process.env.DB_NAME
 });
 
-//function to display the table//
+//function to display the inventory in table format//
+
 var showProducts = function (cb) {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
@@ -47,7 +48,7 @@ var doneShopping = function () {
     }]).then(function (done) {
         console.log(done.done);
         if (done.done === "Yes") {
-            displayProducts(ask);
+            showProducts(askShopper);
         } else {
             console.log(chalk.magenta(`
 
@@ -58,7 +59,8 @@ Thanks for shopping at Bamazon!  Have a nice day!`));
     });
 };
 
-//function to update stock after purchase has been maded
+//function to update stock after purchase has been made
+
 var updateProducts = function (quantity, purchased, price) {
     let total_cost = parseFloat(purchased) * parseFloat(price);
     let remainingInventory = quantity - purchased;
@@ -72,7 +74,7 @@ we currently do not have enough in stock.
         doneShopping();
     } else {
         connection.query("UPDATE products SET stock_quantity = ?, product_sales = ? WHERE ?", [remainingInventory, total_cost, {
-            item_id: product_id
+            item_id: productId
         }], function (err, res) {
             if (err) throw err;
             console.log(chalk.green("-------------------------------------"));
@@ -83,3 +85,37 @@ we currently do not have enough in stock.
         });
     }
 };
+
+var askShopper = function () {
+
+    inquirer.prompt([
+  
+      {
+        type: "input",
+        name: "item",
+        message: "What would you like to buy?  Select by Item #",
+      },
+      {
+        type: "input",
+        name: "quantity",
+        message: "How many would you like?",
+      }
+  
+    ]).then(function (bamazon) {
+      productId = bamazon.item;
+      if (bamazon.quantity > 1) {
+        endingString = "s.";
+      } else {
+        endingString = ".";
+      };
+      connection.query("SELECT product_name, stock_quantity, price FROM products WHERE ?", {
+        item_id: bamazon.item
+      }, function (err, res) {
+        if (err) throw err;
+        productName = res[0].product_name;
+        updateProducts(res[0].stock_quantity, bamazon.quantity, res[0].price);
+      });
+    });
+  };
+  
+  showProducts(askShopper);
