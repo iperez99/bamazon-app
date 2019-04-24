@@ -18,3 +18,6 @@ var connection = mysql.createConnection({
     password: process.env.DB_PASS,
     database: process.env.DB_NAME
 });
+
+
+
