@@ -4,7 +4,7 @@ var inquirer = require("inquirer");
 var chalk = require("chalk");
 var Table = require("cli-table");
 
-// Variables that will be used in the inquirer function
+// global variables that will be used in the inquirer function
 var productId;
 var productName;
 
@@ -73,13 +73,13 @@ we currently do not have enough in stock.
 `))
         doneShopping();
     } else {
-        connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ? ", [remainingInventory, total_cost, {
+        connection.query("UPDATE products SET stock_quantity = ?, product_sales = ? WHERE ? ", [remainingInventory, total_cost, {
             item_id: productId
         }], function (err, res) {
             if (err) throw err;
             console.log(chalk.green("-------------------------------------"));
-            console.log("You purchased " + purchased + " " + productName + "(s)");
-            console.log("Your total cost is $" + total_cost);
+            console.log("You just purchased " + purchased + " " + productName + "(s)");
+            console.log("The total cost is $" + total_cost);
             console.log(chalk.green("-----------------------------------"));
             doneShopping();
         });
