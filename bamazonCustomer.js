@@ -25,7 +25,7 @@ var showProducts = function (cb) {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
         var table = new Table({
-            head: (chalk.cyan["ID", "Product", "Department", "Price"]),
+            head: ["ID", "Product", "Department", "Price"],
             colWidths: [5, 30, 30, 8]
         });
         for (var i = 0; i < res.length; i++) {
@@ -73,13 +73,13 @@ we currently do not have enough in stock.
 `))
         doneShopping();
     } else {
-        connection.query("UPDATE products SET stock_quantity = ?, product_sales = ? WHERE ?", [remainingInventory, total_cost, {
+        connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ? ", [remainingInventory, total_cost, {
             item_id: productId
         }], function (err, res) {
             if (err) throw err;
             console.log(chalk.green("-------------------------------------"));
-            console.log("You just purchased " + purchased + " " + productName + "(s)");
-            console.log("The total cost is $" + total_cost);
+            console.log("You purchased " + purchased + " " + productName + "(s)");
+            console.log("Your total cost is $" + total_cost);
             console.log(chalk.green("-----------------------------------"));
             doneShopping();
         });
